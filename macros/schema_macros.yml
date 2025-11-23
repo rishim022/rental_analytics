@@ -1,0 +1,22 @@
+version: 2
+
+macros:
+  - name: has_amenity
+    description: >
+      Returns a SQL boolean expression indicating whether a specific amenity
+      appears in a stringified JSON amenities list. Case-insensitive and intended
+      for use in intermediate/mart models to create standardized amenity flags.
+    arguments:
+      - name: amenities_col
+        description: >
+          The column containing the amenity list, typically a stringified JSON array
+          such as 'amenities_json' from the staging layer.
+      - name: amenity_name
+        description: >
+          The amenity to search for passed as a plain string (e.g. 'wifi').
+    examples:
+      - >
+          -- Example usage in a model:
+          -- Returns a boolean expression like:
+          -- lower(amenities_json) like concat('%', lower('wifi'), '%')
+          has_amenity('amenities_json', 'wifi')

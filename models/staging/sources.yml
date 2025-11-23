@@ -1,0 +1,163 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw tables providing source-of-truth property rental and reviews data."
+    schema: HUBSPOT
+    tables:
+
+      # -----------------------------------------
+      # LISTINGS
+      # -----------------------------------------
+      - name: LISTINGS
+        description: "Raw listing metadata including host information, property attributes, and lifetime review stats."
+        columns:
+          - name: ID
+            description: "Unique identifier for each listing."
+            tests: [not_null, unique]
+
+          - name: NAME
+            description: "Name of the listing."
+
+          - name: HOST_ID
+            description: "Unique identifier of the host who owns the listing."
+            tests: [not_null]
+
+          - name: HOST_NAME
+            description: "Name of the host."
+
+          - name: HOST_SINCE
+            description: "Date when the host joined the platform."
+
+          - name: HOST_LOCATION
+            description: "Location of the Host"
+
+          - name: HOST_VERIFICATIONS
+            description: "Array of methods the Host can use to verify."
+
+          - name: NEIGHBORHOOD
+            description: "Neighborhood or locality where the listing is located."
+
+          - name: PROPERTY_TYPE
+            description: "Type of property (house, apartment, condo, villa, etc)."
+
+          - name: ROOM_TYPE
+            description: "Room configuration (e.g., entire home, private room, shared room)."
+
+          - name: ACCOMMODATES
+            description: "Maximum number of guests the listing can accommodate."
+
+          - name: BEDROOMS
+            description: "Number of bedrooms available for guests."
+
+          - name: BEDS
+            description: "Number of beds available."
+
+          - name: BATHROOMS_TEXT
+            description: "Text description of bathrooms (e.g., '1 shared baths')."
+
+          - name: AMENITIES
+            description: "Raw amenities array as provided by the source."
+
+          - name: PRICE
+            description: "Base price for the listing."
+
+          - name: NUMBER_OF_REVIEWS
+            description: "Lifetime number of reviews received by the listing."
+
+          - name: FIRST_REVIEW
+            description: "Date of the first recorded review for the listing."
+
+          - name: LAST_REVIEW_DATE
+            description: "Date of the most recent review for the listing."
+
+          - name: REVIEW_SCORE_RATING
+            description: "Overall average rating of the listing across all reviews."
+
+      # -----------------------------------------
+      # CALENDAR
+      # -----------------------------------------
+      - name: CALENDAR
+        description: "Daily availability, pricing, and reservation records at (listing_id, date) grain."
+        columns:
+          - name: LISTING_ID
+            description: "Identifier of the listing for this calendar date."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'LISTINGS')
+                  field: ID
+
+          - name: DATE
+            description: "Calendar date for which availability and pricing apply."
+            tests: [not_null]
+
+          - name: AVAILABLE
+            description: "Boolean flag: true if listing is available on this date, false if reserved."
+            tests:
+              - accepted_values:
+                  arguments:
+                    values: [true, false]
+                    quote: false
+
+          - name: RESERVATION_ID
+            description: "Unique ID for the reservation on this date; null if listing was not booked."
+
+          - name: PRICE
+            description: "Price to book this listing for a single night on this date."
+
+          - name: MINIMUM_NIGHTS
+            description: "Minimum number of nights required to book on this date."
+
+          - name: MAXIMUM_NIGHTS
+            description: "Maximum number of consecutive nights that can be booked on this date."
+
+      # -----------------------------------------
+      # GENERATED_REVIEWS
+      # -----------------------------------------
+      - name: GENERATED_REVIEWS
+        description: "Raw event-level reviews; one row per review created."
+        columns:
+          - name: ID
+            description: "Unique review identifier."
+            tests: [unique]
+
+          - name: LISTING_ID
+            description: "Listing that received this review."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'LISTINGS')
+                  field: ID
+
+          - name: REVIEW_SCORE
+            description: "Integer rating from 1 to 5."
+            tests:
+              - accepted_values:
+                  arguments:
+                    values: [1, 2, 3, 4, 5]
+                    quote: false
+
+          - name: REVIEW_DATE
+            description: "Date when the review was created or recorded."
+
+      # -----------------------------------------
+      # AMENITIES_CHANGELOG
+      # -----------------------------------------
+      - name: AMENITIES_CHANGELOG
+        description: "History of amenity list updates per listing; used to reconstruct day-level amenity flags."
+        columns:
+          - name: LISTING_ID
+            description: "Listing whose amenities were updated at this timestamp."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'LISTINGS')
+                  field: ID
+
+          - name: CHANGE_AT
+            description: "Timestamp at which the amenity list changed."
+            tests: [not_null]
+
+          - name: AMENITIES
+            description: "Stringified JSON array of amenities as of CHANGE_AT."

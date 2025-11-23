@@ -1,0 +1,128 @@
+version: 2
+
+models:
+  - name: fct_listing_day
+    description: >
+      Core daily fact table at (listing_id, date) grain. Combines calendar
+      availability, pricing, reservations, listing attributes, amenities,
+      and review metrics to support occupancy, revenue, and experience
+      analysis.
+    config: 
+      meta:
+        owner: "Rishi Mukherjee"
+        version: "1.0.0"
+        domain: "rentals"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: ['listing_id', 'date']
+    columns:
+      - name: listing_id
+        description: "Unique identifier for the listing."
+        tests:
+          - not_null
+
+      - name: date
+        description: "Calendar date for which all metrics in this row are valid."
+        tests:
+          - not_null
+
+      - name: is_available
+        description: "Boolean flag indicating if the listing was available (true) or reserved (false) on this date."
+
+      - name: reservation_id
+        description: "Identifier of the reservation occupying this date, if any. Null when the listing is available."
+
+      - name: nightly_price
+        description: "Base nightly price for the listing on this date, before discounts or fees."
+
+      - name: minimum_nights
+        description: "Minimum number of nights required for a reservation starting on this date."
+
+      - name: maximum_nights
+        description: "Maximum number of nights allowed for a reservation starting on this date."
+
+      - name: revenue
+        description: >
+          Revenue attributable to this listing on this date. Typically equals
+          nightly_price when reserved, and 0 when the listing is available
+          and not booked.
+        tests:
+          - not_null
+
+      # Listing attributes
+      - name: listing_name
+        description: "Marketing/display name of the listing."
+
+      - name: host_id
+        description: "Unique identifier for the host that owns or manages the listing."
+
+      - name: host_name
+        description: "Name of the host for this listing."
+
+      - name: host_since
+        description: "Date the host joined the platform."
+
+      - name: neighborhood
+        description: "Neighborhood or local area where the listing is located."
+
+      - name: property_type
+        description: "High-level type of property (e.g. Apartment, House, Loft)."
+
+      - name: room_type
+        description: "Type of room being rented (e.g. Entire home, Private room)."
+
+      - name: accommodates
+        description: "Maximum number of guests that the listing can accommodate."
+
+      - name: bedrooms
+        description: "Number of bedrooms in the listing."
+
+      - name: beds
+        description: "Number of beds in the listing."
+
+      - name: bathrooms_text
+        description: "Text description of bathrooms (including half baths, shared vs private)."
+      
+      - name: is_reserved
+        description: "Boolean flag of whether the property is occupied then true or else false"
+
+      # Amenities
+      - name: has_air_conditioning
+        description: "True if the listing advertises air conditioning in its amenities as of this date."
+
+      - name: has_lockbox
+        description: "True if the listing advertises a lockbox as of this date."
+
+      - name: has_first_aid_kit
+        description: "True if the listing advertises a first aid kit as of this date."
+
+      - name: has_essentials
+        description: "True if the listing includes essentials (towels, bed sheets, soap, toilet paper, etc.)."
+
+      - name: has_wifi
+        description: "True if the listing advertises Wi-Fi as of this date."
+
+      - name: has_hotwater
+        description: "True if the listing advertises hot water as of this date."
+
+      - name: has_kitchen
+        description: "True if the listing includes a kitchen as of this date."
+
+      - name: has_cooking_basics
+        description: "True if the listing provides basic cooking equipment (pots, pans, oil, salt, pepper)."
+
+      - name: has_bed_linens
+        description: "True if the listing provides bed linens as of this date."
+
+      - name: has_long_term_stay_allowed
+        description: "True if long-term stays are allowed for this listing as of this date."
+
+      # Reviews
+      - name: number_of_reviews
+        description: "Total lifetime count of reviews for the listing as of the latest load."
+
+      - name: avg_review_score
+        description: >
+          Cumulative average review score for this listing as of this date,
+          calculated from all reviews with review_date <= date to avoid
+          lookahead bias.

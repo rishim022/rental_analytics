@@ -1,0 +1,167 @@
+version: 2
+
+models:
+  - name: int_amenities_daily
+    description: >
+      Day-level amenity snapshot at (listing_id, date) grain derived from the
+      changelog table. Used downstream.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['listing_id','date']
+    columns:
+      - name: listing_id
+        description: "Unique identifier for the listing."
+        tests: [not_null]
+      - name: date
+        description: "Calendar date for which amenity flags are valid."
+        tests: [not_null]
+      - name: amenities_json
+        description: "Array of amenities available for guests."
+      - name: has_air_conditioning
+        description: "Boolean column if the property has air conditioning as amenity"
+      - name: has_lockbox
+        description: "Boolean column if the property has lockbox as amenity"
+      - name: has_first_aid_kit
+        description: "Boolean column if the property has first aid kit as amenity"
+      - name: has_wifi
+        description: "Boolean column if the property has wifi as amenity"
+      - name: has_essentials
+        description: "Boolean column if the property has essential items as amenity"
+      - name: has_long_term_stay_allowed
+        description: "Boolean column if the property allows long term stays"
+      - name: has_hotwater
+        description: "Boolean column if the property provides hot water as amenity"
+      - name: has_bed_linens
+        description: "Boolean column if the property provides bed linens as amenity"
+      - name: has_cooking_basics
+        description: "Boolean column if the property provides cooking basic items as amenity"
+      - name: has_kitchen
+        description: "Boolean column if the property has kitchen as amenity"
+
+  - name: int_reviews_daily
+    description: >
+      Daily cumulative average review score per listing. Uses all reviews
+      with review_date <= date to avoid lookahead bias.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['listing_id','date']
+    columns:
+      - name: listing_id
+        description: "Unique identifier for the listing."
+        tests: [not_null]
+      - name: date
+        description: "Calendar date for which reviews are valid."
+        tests: [not_null]
+      - name: avg_review_score
+        description: "Cumulative average review score of the listing"
+
+
+  - name: int_listing_calendar_enriched
+    description: >
+      Unified daily-grain model joining calendar data with listing attributes,
+      amenities, and reviews. Serves as the primary upstream model for
+      fct_listing_day.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['listing_id','date']
+    columns:
+      # Grain keys
+      - name: listing_id
+        description: "Unique identifier for the listing."
+        tests: [not_null]
+
+      - name: date
+        description: "Calendar date representing nightly availability and pricing."
+        tests: [not_null]
+
+      # Calendar / reservation attributes
+      - name: is_available
+        description: "Boolean indicating whether the listing is available on this date."
+
+      - name: reservation_id
+        description: "Reservation identifier if the listing is reserved on this date; null otherwise."
+
+      - name: nightly_price
+        description: "Price for booking the listing on this date."
+
+      - name: minimum_nights
+        description: "Minimum required nights for booking on this date."
+
+      - name: maximum_nights
+        description: "Maximum allowed nights for booking on this date."
+
+      # Listing attributes
+      - name: listing_name
+        description: "Name/title of the listing."
+
+      - name: host_id
+        description: "Unique identifier of the host who owns the listing."
+
+      - name: host_name
+        description: "Name of the host."
+
+      - name: host_since
+        description: "Date when the host joined the platform."
+
+      - name: neighborhood
+        description: "Neighborhood or locality where the listing is located."
+
+      - name: property_type
+        description: "Type of property (e.g., apartment, house, villa)."
+
+      - name: room_type
+        description: "Room type configuration (e.g., entire home, private room)."
+
+      - name: accommodates
+        description: "Maximum number of guests the listing can accommodate."
+
+      - name: bedrooms
+        description: "Number of bedrooms in the listing."
+
+      - name: beds
+        description: "Number of beds available in the listing."
+
+      - name: bathrooms_text
+        description: "Formatted text describing the number of bathrooms."
+
+      - name: number_of_reviews
+        description: "Lifetime total number of reviews received by the listing."
+
+      # Amenities
+      - name: has_air_conditioning
+        description: "True if listing offers air conditioning as an amenity."
+
+      - name: has_lockbox
+        description: "True if listing provides a lockbox access method."
+
+      - name: has_first_aid_kit
+        description: "True if a first aid kit is available on the property."
+
+      - name: has_essentials
+        description: "True if basics like towels, soap, and toiletries are provided."
+
+      - name: has_wifi
+        description: "True if wireless internet is available."
+
+      - name: has_hotwater
+        description: "True if listing provides hot water facilities."
+
+      - name: has_kitchen
+        description: "True if guests have access to a functional kitchen."
+
+      - name: has_cooking_basics
+        description: "True if cookware, utensils, and basic supplies are provided."
+
+      - name: has_bed_linens
+        description: "True if bedding and linens are provided."
+
+      - name: has_long_term_stay_allowed
+        description: "True if property supports long-term bookings (typically >28 days)."
+
+      # Review metrics
+      - name: avg_review_score
+        description: "Daily cumulative average review score based on reviews up to this date."
+

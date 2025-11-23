@@ -1,0 +1,117 @@
+version: 2
+
+models:
+    # -----------------------------------------
+    # LISTINGS
+    # -----------------------------------------
+  - name: stg_listings
+    description: "Cleaned listings data one row per listing."
+    columns:
+      - name: listing_id
+        description: "Unique identifier for the listing."
+        tests:
+          - not_null
+          - unique
+      - name: listing_name
+        description: "Display name of listing."
+      - name: host_id
+        description: "Unique ID for the Host who owns this property."
+        tests:
+          - not_null
+      - name: host_name
+        description: "Display name of Host."
+      - name: host_since
+        description: "When the Host signed up."
+      - name: host_location
+        description: "Where the Host is based."
+      - name: host_verifications_raw
+        description: "Array of methods the Host can use to verify."
+      - name: neighborhood
+        description: "The neighborhood where this listing is located."
+      - name: property_type
+        description: "Description of the type of property."
+      - name: room_type
+        description: "Description of the type of room."
+      - name: accommodates
+        description: "Number of guests this room can accommodate."
+      - name: bathrooms_text
+        description: "Number and types of bathrooms available."
+      - name: bedrooms
+        description: "Number of bedrooms available for use."
+      - name: beds
+        description: "Number of beds available for use."
+      - name: amenities_raw
+        description: "Array of amenities available for guests."
+      - name: base_price
+        description: "The price of this listing as of the start of the date range in CALENDAR."
+      - name: number_of_reviews
+        description: "The number of reviews this listing has ever received."
+      - name: first_review_date
+        description: "The date of the first review this listing received."
+      - name: last_review_date
+        description: "The date of the most recent review this listing received."
+      - name: review_score_rating
+        description: "The average review score of this listing."
+
+    # -----------------------------------------
+    # CALENDAR
+    # -----------------------------------------
+  - name: stg_calendar
+    description: "Daily calendar one row per listing-date."
+    columns:
+      - name: listing_id
+        description: "Identifier of the listing for this calendar date."
+        tests: [not_null]
+      - name: date
+        description: "Calendar date for which availability and pricing apply."
+        tests: [not_null]
+      - name: is_available
+        description: "Boolean flag contains true if this property is available on this date. Contains false if not."
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: reservation_id
+        description: "Unique ID for that DATEs reservation. Foreign key.If NULL, there was no reservation on that date."
+      - name: nightly_price
+        description: "The USD price to rent this property on DATE."
+      - name: minimum_nights
+        description: "The minimum number of nights that must be booked consecutively for this property."
+      - name: maximum_nights
+        description: "The maximum number of nights that may be booked consecutively for this property."
+    # -----------------------------------------
+    # GENERATED_REVIEWS
+    # -----------------------------------------
+  - name: stg_generated_reviews
+    description: "Cleaned reviews data with one row per generated review."
+    columns:
+      - name: review_id
+        description: "Unique identifier for the review.Auto-incrementing ID for the dummy reviews data"
+        tests:
+          - unique
+      - name: listing_id
+        description: "Unique ID for the listing to this which this row applies"
+      - name: review_score
+        description: "Generated score of the review, integer 1 to 5"
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+                quote: false
+      - name: review_date
+        description: "Generated date of the review"
+    # -----------------------------------------
+    # AMENITIES_CHANGELOG
+    # -----------------------------------------
+  - name: stg_amenities_changelog
+    description: "Amenities change history"
+    columns:
+      - name: listing_id
+        description: "Identifier of the listing whose amenities changed."
+        tests: [not_null]
+      - name: change_at
+        description: "Timestamp when the amenities list was updated."
+        tests: [not_null]
+      - name: amenities_json
+        description: "Array of the amenities available as of the change."
