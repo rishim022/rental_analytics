@@ -16,6 +16,10 @@ models:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns: ['listing_id', 'date']
+
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('int_listing_calendar_enriched')
+
     columns:
       - name: listing_id
         description: "Unique identifier for the listing."
@@ -35,7 +39,7 @@ models:
 
       - name: nightly_price
         description: "Base nightly price for the listing on this date, before discounts or fees."
-
+        
       - name: minimum_nights
         description: "Minimum number of nights required for a reservation starting on this date."
 
