@@ -13,7 +13,7 @@
     incremental_strategy='merge',
     on_schema_change='sync_all_columns',
     tags=['mart'],
-    cluster_by=['listing_id', 'neighborhood']
+    cluster_by=['listing_id', 'date']
 ) }}
 
 select
