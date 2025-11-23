@@ -12,12 +12,12 @@ with source as (
 cleaned as (
     select
         cast(ID as integer) as listing_id,
-        NAME as listing_name,
+        cast(NAME as string) as listing_name,
         cast(HOST_ID as integer) as host_id,
         HOST_NAME as host_name,
         cast(HOST_SINCE as date) as host_since,
         HOST_LOCATION as host_location,
-        HOST_VERIFICATIONS as host_verifications_raw,
+        HOST_VERIFICATIONS as host_verifications,
         NEIGHBORHOOD as neighborhood,
         PROPERTY_TYPE as property_type,
         ROOM_TYPE as room_type,

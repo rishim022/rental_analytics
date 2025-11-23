@@ -19,6 +19,7 @@
 select
     -- Listing attributes
     listing_id,
+    listing_name,
     date,
     neighborhood,
     host_id,
@@ -28,6 +29,19 @@ select
     room_type,
     bedrooms,
     beds,
+    accommodates,
+    bathrooms,
+    bathroom_type,
+    host_verified_email,
+    host_verified_phone,
+    host_verified_reviews,
+    host_verified_kba,
+    host_verified_government_id,
+    host_verified_identity_manual,
+    host_verified_identity_work_email,
+    host_verified_identity_facebook,
+    host_verified_identity_offline_government_id,
+    host_verified_identity_offline_jumio,
 
     -- Booking & revenue
     nightly_price,

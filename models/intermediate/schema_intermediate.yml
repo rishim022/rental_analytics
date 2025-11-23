@@ -80,12 +80,14 @@ models:
       # Calendar / reservation attributes
       - name: is_available
         description: "Boolean indicating whether the listing is available on this date."
+        tests: [not_null]
 
       - name: reservation_id
         description: "Reservation identifier if the listing is reserved on this date; null otherwise."
 
       - name: nightly_price
         description: "Price for booking the listing on this date."
+        tests: [not_null]
 
       - name: minimum_nights
         description: "Minimum required nights for booking on this date."
@@ -109,6 +111,37 @@ models:
       - name: neighborhood
         description: "Neighborhood or locality where the listing is located."
 
+    # Host Verification Flags (derived from JSON)
+      - name: host_verified_email
+        description: "True if host verification includes 'email'."
+
+      - name: host_verified_phone
+        description: "True if host verification includes 'phone'."
+
+      - name: host_verified_reviews
+        description: "True if host verification includes 'reviews'."
+
+      - name: host_verified_kba
+        description: "True if host verification includes 'kba' (knowledge-based authentication)."
+
+      - name: host_verified_government_id
+        description: "True if host provides government ID verification."
+
+      - name: host_verified_identity_manual
+        description: "True if identity is manually verified."
+
+      - name: host_verified_identity_work_email
+        description: "True if host verified via work email."
+
+      - name: host_verified_identity_facebook
+        description: "True if host verified via Facebook."
+
+      - name: host_verified_identity_offline_government_id
+        description: "True if host verified via offline government ID."
+
+      - name: host_verified_identity_offline_jumio
+        description: "True if host verified via Jumio identity service."
+
       - name: property_type
         description: "Type of property (e.g., apartment, house, villa)."
 
@@ -124,8 +157,11 @@ models:
       - name: beds
         description: "Number of beds available in the listing."
 
-      - name: bathrooms_text
-        description: "Formatted text describing the number of bathrooms."
+      - name: bathrooms
+        description: "The number of bathrooms."
+
+      - name: bathroom_type
+        description: "The type of bathroom."
 
       - name: number_of_reviews
         description: "Lifetime total number of reviews received by the listing."

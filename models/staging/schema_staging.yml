@@ -14,6 +14,7 @@ models:
           - unique
       - name: listing_name
         description: "Display name of listing."
+        data_type: string
       - name: host_id
         description: "Unique ID for the Host who owns this property."
         tests:
@@ -24,7 +25,7 @@ models:
         description: "When the Host signed up."
       - name: host_location
         description: "Where the Host is based."
-      - name: host_verifications_raw
+      - name: host_verifications
         description: "Array of methods the Host can use to verify."
       - name: neighborhood
         description: "The neighborhood where this listing is located."

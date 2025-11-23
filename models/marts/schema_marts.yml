@@ -14,7 +14,8 @@ models:
         domain: "rentals"
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: ['listing_id', 'date']
+          arguments:
+            combination_of_columns: ['listing_id', 'date']
     columns:
       - name: listing_id
         description: "Unique identifier for the listing."
@@ -80,8 +81,42 @@ models:
       - name: beds
         description: "Number of beds in the listing."
 
-      - name: bathrooms_text
-        description: "Text description of bathrooms (including half baths, shared vs private)."
+      - name: bathrooms
+        description: "Number of bathrooms (includes shared vs private)."
+
+      - name: bathroom_type
+        description: "Type of bathroom (shared or private). Bath is considered here as private if not mentioned explicitly"
+      
+    # Host Verification Flags (derived from JSON)
+      - name: host_verified_email
+        description: "True if host verification includes 'email'."
+
+      - name: host_verified_phone
+        description: "True if host verification includes 'phone'."
+
+      - name: host_verified_reviews
+        description: "True if host verification includes 'reviews'."
+
+      - name: host_verified_kba
+        description: "True if host verification includes 'kba' (knowledge-based authentication)."
+
+      - name: host_verified_government_id
+        description: "True if host provides government ID verification."
+
+      - name: host_verified_identity_manual
+        description: "True if identity is manually verified."
+
+      - name: host_verified_identity_work_email
+        description: "True if host verified via work email."
+
+      - name: host_verified_identity_facebook
+        description: "True if host verified via Facebook."
+
+      - name: host_verified_identity_offline_government_id
+        description: "True if host verified via offline government ID."
+
+      - name: host_verified_identity_offline_jumio
+        description: "True if host verified via Jumio identity service."
       
       - name: is_reserved
         description: "Boolean flag of whether the property is occupied then true or else false"

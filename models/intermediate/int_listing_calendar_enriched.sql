@@ -36,6 +36,7 @@ listings as (
         accommodates,
         bedrooms,
         beds,
+        host_verifications,
         bathrooms_text,
         number_of_reviews
     from {{ ref('stg_listings') }}
@@ -87,7 +88,19 @@ select
     l.accommodates,
     l.bedrooms,
     l.beds,
-    l.bathrooms_text,
+    {{ extract_bathroom_count('bathrooms_text') }} as bathrooms,
+    {{ extract_bathroom_type('bathrooms_text') }} as bathroom_type,
+    -- host verification methods
+    {{ verification('host_verifications', 'email') }}  as host_verified_email,
+    {{ verification('host_verifications', 'phone') }}  as host_verified_phone,
+    {{ verification('host_verifications', 'reviews') }} as host_verified_reviews,
+    {{ verification('host_verifications', 'kba') }}     as host_verified_kba,
+    {{ verification('host_verifications', 'government_id') }} as host_verified_government_id,
+    {{ verification('host_verifications', 'identity_manual') }} as host_verified_identity_manual,
+    {{ verification('host_verifications', 'work_email') }} as host_verified_identity_work_email,
+    {{ verification('host_verifications', 'facebook') }} as host_verified_identity_facebook,
+    {{ verification('host_verifications', 'offline_government_id') }} as host_verified_identity_offline_government_id,
+    {{ verification('host_verifications', 'jumio') }} as host_verified_identity_offline_jumio,
 
     -- Amenities
     a.has_air_conditioning,

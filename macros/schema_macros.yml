@@ -20,3 +20,36 @@ macros:
           -- Returns a boolean expression like:
           -- lower(amenities_json) like concat('%', lower('wifi'), '%')
           has_amenity('amenities_json', 'wifi')
+
+  - name: verification
+    description: >
+      Returns a boolean expression indicating whether a host verification
+      value exists in a stringified JSON list. Same matching logic as has_amenity.
+    arguments:
+      - name: host_verifications_col
+        description: Column containing verification values as JSON string.
+      - name: host_verifications_name
+        description: The verification method to search for, e.g. 'phone', 'email', 'government_id'.
+
+  - name: extract_bathroom_count
+    description: >
+      Extracts a numeric bathroom count (FLOAT64) from a text column such as
+      '1 bath', '2 baths', '1.5 baths', or '2.5 baths'. The macro uses
+      REGEXP_EXTRACT to pull the first integer or decimal from the string and
+      SAFE_CAST to convert it to FLOAT64.
+    arguments:
+      - name: col
+        description: >
+          Column or SQL expression containing the bathroom description text
+          (for example: l.bathrooms_text).
+
+  - name: extract_bathroom_type
+    description: >
+      Classifies a bathroom description into 'shared' or 'private' based on the
+      presence of those words in the text. If neither 'shared' nor 'private'
+      appears, the macro defaults to 'private' (e.g. '1 bath' -> 'private').
+    arguments:
+      - name: col
+        description: >
+          Column or SQL expression containing the bathroom description text
+          to classify.

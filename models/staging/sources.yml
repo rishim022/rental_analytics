@@ -18,6 +18,7 @@ sources:
 
           - name: NAME
             description: "Name of the listing."
+            data_type: string
 
           - name: HOST_ID
             description: "Unique identifier of the host who owns the listing."
