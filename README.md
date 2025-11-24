@@ -43,7 +43,6 @@ dbt docs serve
   /intermediate   → Business logic transformations
   /marts          → Final fact & dimension models
 /snapshots        → Historical tracking
-/tests            → Custom tests
 /macros           → Reusable logic (e.g., amenity, bathroom utils)
 ```
 
