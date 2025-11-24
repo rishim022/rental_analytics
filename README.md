@@ -61,8 +61,6 @@ All generic tests use the updated `arguments:` format for dbt 1.11 compatibility
 ## 📊 Marts
 Key outputs include:
 - `fct_listing_day` – Daily grain fact table combining listings, availability, pricing, and reservations
-- `dim_listing` – Listing-level attributes
-- `dim_host` – Host details and derived metrics
 
 ---
 
@@ -71,7 +69,6 @@ Key outputs include:
 - One model per file
 - Documentation for every model + column
 - Business logic only in intermediate models
-- Seeds used for mapping tables
 - Incremental strategies for large fact tables
 
 ---
