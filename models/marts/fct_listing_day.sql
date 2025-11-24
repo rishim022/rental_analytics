@@ -47,7 +47,6 @@ select
     nightly_price,
     is_available,
     reservation_id,
-    (reservation_id is not null) as is_reserved, -- boolean flag for booking
     
     case when reservation_id is not null then nightly_price else 0 end as revenue,
 
@@ -71,3 +70,7 @@ select
     avg_review_score
 
 from {{ ref('int_listing_calendar_enriched') }}
+
+--{% if is_incremental() %}
+--    where safe_cast(date as DATE) >= date_sub(current_date(), interval 7 day)
+--{% endif %}

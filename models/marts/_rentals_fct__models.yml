@@ -121,10 +121,7 @@ models:
 
       - name: host_verified_identity_offline_jumio
         description: "True if host verified via Jumio identity service."
-      
-      - name: is_reserved
-        description: "Boolean flag of whether the property is occupied then true or else false"
-
+    
       # Amenities
       - name: has_air_conditioning
         description: "True if the listing advertises air conditioning in its amenities as of this date."
