@@ -48,7 +48,7 @@ select
     is_available,
     reservation_id,
     
-    case when reservation_id is not null then nightly_price else 0 end as revenue,
+    case when reservation_id<>'NULL' then nightly_price else 0 end as revenue,
 
     minimum_nights,
     maximum_nights,

@@ -5,7 +5,7 @@ models:
     description: >
       Core daily fact table at (listing_id, date) grain. Combines calendar
       availability, pricing, reservations, listing attributes, amenities,
-      and review metrics to support occupancy, revenue, and experience
+      and review metrics to support occupancy, and experience
       analysis.
     config: 
       meta:
