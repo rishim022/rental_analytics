@@ -1,0 +1,22 @@
+# Copy to profiles.yml (gitignored) and fill in your own GCP project + service account key.
+# Matches the `profile: 'rentals_analytics'` set in ../dbt_project.yml.
+
+rentals_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: your-gcp-project-id
+      dataset: dev_rentals_analytics
+      keyfile: /opt/airflow/keys/gcp-service-account.json
+      threads: 4
+      location: US
+    prod:
+      type: bigquery
+      method: service-account
+      project: your-gcp-project-id
+      dataset: rentals_analytics
+      keyfile: /opt/airflow/keys/gcp-service-account.json
+      threads: 4
+      location: US

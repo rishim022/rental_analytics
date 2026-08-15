@@ -2,3 +2,13 @@
 target/
 dbt_packages/
 logs/
+__pycache__/
+*.pyc
+
+# Airflow
+airflow/logs/*
+!airflow/logs/.gitkeep
+airflow/profiles/profiles.yml
+airflow/keys/*
+!airflow/keys/.gitkeep
+airflow/.env
